@@ -27,7 +27,56 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="min-h-screen bg-gradient-to-b from-orange-50 via-amber-50 to-white text-zinc-900">
+          <header className="border-b border-orange-100 bg-white/80 backdrop-blur">
+            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-rose-500 text-xs font-semibold text-white shadow-sm">
+                  RS
+                </span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold text-zinc-900">
+                    RecipeShare
+                  </span>
+                  <span className="text-[11px] text-zinc-500">
+                    Share your go-to recipes
+                  </span>
+                </div>
+              </div>
+
+              <nav className="hidden items-center gap-6 text-xs font-medium text-zinc-700 sm:flex">
+                <button type="button" className="hover:text-zinc-900">
+                  Explore
+                </button>
+                <button type="button" className="hover:text-zinc-900">
+                  My recipes
+                </button>
+                <button type="button" className="hover:text-zinc-900">
+                  Saved
+                </button>
+              </nav>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  className="hidden rounded-full border border-orange-100 bg-white/80 px-3 py-1.5 text-xs font-medium text-orange-700 shadow-sm transition hover:border-orange-200 hover:bg-white sm:inline-flex"
+                >
+                  Log in
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex items-center rounded-full bg-orange-500 px-3.5 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-orange-600"
+                >
+                  Sign up
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <main className="mx-auto flex min-h-[calc(100vh-3.25rem)] max-w-6xl flex-col px-4 pb-16 pt-8 sm:px-6 lg:px-8 lg:pt-10">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   );
