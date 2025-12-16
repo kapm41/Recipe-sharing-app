@@ -42,10 +42,9 @@ export function SignupForm() {
       return;
     }
 
-    // Redirect to home page on success
+    // Redirect to dashboard on success (hard redirect to ensure session is established)
     // Note: User may need to verify email depending on Supabase settings
-    router.push("/");
-    router.refresh();
+    window.location.href = "/dashboard";
   }
 
   return (

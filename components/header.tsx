@@ -73,6 +73,12 @@ export function Header() {
           ) : user ? (
             <>
               <Link
+                href="/dashboard"
+                className="hidden rounded-full border border-orange-100 bg-white/80 px-3 py-1.5 text-xs font-medium text-orange-700 shadow-sm transition hover:border-orange-200 hover:bg-white sm:inline-flex"
+              >
+                Dashboard
+              </Link>
+              <Link
                 href="/profile"
                 className="hidden rounded-full border border-orange-100 bg-white/80 px-3 py-1.5 text-xs font-medium text-orange-700 shadow-sm transition hover:border-orange-200 hover:bg-white sm:inline-flex"
               >

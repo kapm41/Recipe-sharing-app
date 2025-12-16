@@ -28,9 +28,8 @@ export function LoginForm() {
       return;
     }
 
-    // Redirect to home page on success
-    router.push("/");
-    router.refresh();
+    // Redirect to dashboard on success (hard redirect to ensure session is established)
+    window.location.href = "/dashboard";
   }
 
   return (
