@@ -2,6 +2,7 @@ import { createSupabaseServerClient } from "../../lib/supabaseServer";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getUserProfile } from "../../lib/auth";
+import { ProfileForm } from "../../components/profile/profile-form";
 
 export const metadata = {
   title: "Profile | RecipeShare",
@@ -30,46 +31,12 @@ export default async function ProfilePage() {
         </p>
       </div>
 
-      {/* Profile Info Card */}
-      <div className="rounded-2xl border border-orange-100 bg-white/70 p-6 shadow-sm">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-zinc-500">
-              Email
-            </label>
-            <p className="mt-1 text-sm text-zinc-900">{user.email}</p>
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-zinc-500">
-              Username
-            </label>
-            <p className="mt-1 text-sm text-zinc-900">
-              {profile?.username || "Not set"}
-            </p>
-          </div>
-
-          {profile?.bio && (
-            <div>
-              <label className="block text-xs font-medium text-zinc-500">
-                Bio
-              </label>
-              <p className="mt-1 text-sm text-zinc-600">{profile.bio}</p>
-            </div>
-          )}
-
-          <div>
-            <label className="block text-xs font-medium text-zinc-500">
-              Member since
-            </label>
-            <p className="mt-1 text-sm text-zinc-600">
-              {profile?.created_at
-                ? new Date(profile.created_at).toLocaleDateString()
-                : "Recently"}
-            </p>
-          </div>
-        </div>
-      </div>
+      <ProfileForm
+        userEmail={user.email ?? ""}
+        initialUsername={profile?.username ?? ""}
+        initialFullName={profile?.full_name ?? ""}
+        initialBio={profile?.bio ?? ""}
+      />
 
       {/* Quick Actions */}
       <div className="space-y-4">

@@ -6,6 +6,7 @@ import { supabase } from "../../lib/supabaseClient";
 
 export function SignupForm() {
   const router = useRouter();
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,6 +35,11 @@ export function SignupForm() {
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          full_name: fullName.trim() || null,
+        },
+      },
     });
 
     if (signUpError) {
@@ -54,6 +60,23 @@ export function SignupForm() {
           {error}
         </div>
       )}
+
+      <div>
+        <label
+          htmlFor="fullName"
+          className="block text-sm font-medium text-zinc-700"
+        >
+          Full name
+        </label>
+        <input
+          id="fullName"
+          type="text"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          className="mt-1 block w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+          placeholder="e.g. Taylor Smith"
+        />
+      </div>
 
       <div>
         <label
