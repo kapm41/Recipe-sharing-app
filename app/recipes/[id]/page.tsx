@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "../../../lib/supabaseServer";
 import { redirect } from "next/navigation";
 import { FavoriteButton } from "../../../components/recipes/favorite-button";
+import { PublishButton } from "../../../components/recipes/publish-button";
 
 export const metadata = {
   title: "Recipe | RecipeShare",
@@ -99,6 +100,9 @@ export default async function RecipeDetailPage(props: PageProps) {
           </div>
 
           <div className="flex items-center gap-2">
+            {user && user.id === recipe.author_id && !recipe.is_published && (
+              <PublishButton recipeId={id} />
+            )}
             <FavoriteButton
               recipeId={id}
               initialIsFavorited={Boolean(favoriteRow)}
