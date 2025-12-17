@@ -7,7 +7,7 @@ interface Recipe {
   prep_time_minutes: number | null;
   cook_time_minutes: number | null;
   servings: number | null;
-  difficulty: "Easy" | "Medium" | "Hard" | null;
+  difficulty: string | null;
   is_published: boolean;
   created_at: string;
   author?: string;

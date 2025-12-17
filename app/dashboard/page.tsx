@@ -9,27 +9,25 @@ export const metadata = {
   description: "Your RecipeShare dashboard",
 };
 
+interface DashboardRecipe {
+  id: string;
+  title: string;
+  description: string | null;
+  prep_time_minutes: number | null;
+  cook_time_minutes: number | null;
+  servings: number | null;
+  difficulty: string | null;
+  is_published: boolean;
+  created_at: string;
+}
+
 async function getPublishedRecipes() {
   const supabase = await createSupabaseServerClient();
-  
-  const { data, error } = await supabase
+  const supabaseAny = supabase as any;
+
+  const { data, error } = await supabaseAny
     .from("recipes")
-    .select(
-      `
-      id,
-      title,
-      description,
-      prep_time_minutes,
-      cook_time_minutes,
-      servings,
-      difficulty,
-      created_at,
-      author_id,
-      profiles:author_id (
-        username
-      )
-    `
-    )
+    .select("*")
     .eq("is_published", true)
     .order("created_at", { ascending: false })
     .limit(12);
@@ -39,27 +37,16 @@ async function getPublishedRecipes() {
     return [];
   }
 
-  return data || [];
+  return (data || []) as DashboardRecipe[];
 }
 
 async function getUserRecipes(userId: string) {
   const supabase = await createSupabaseServerClient();
-  
-  const { data, error } = await supabase
+  const supabaseAny = supabase as any;
+
+  const { data, error } = await supabaseAny
     .from("recipes")
-    .select(
-      `
-      id,
-      title,
-      description,
-      prep_time_minutes,
-      cook_time_minutes,
-      servings,
-      difficulty,
-      is_published,
-      created_at
-    `
-    )
+    .select("*")
     .eq("author_id", userId)
     .order("created_at", { ascending: false })
     .limit(12);
@@ -69,7 +56,7 @@ async function getUserRecipes(userId: string) {
     return [];
   }
 
-  return data || [];
+  return (data || []) as DashboardRecipe[];
 }
 
 export default async function DashboardPage() {
@@ -150,7 +137,7 @@ export default async function DashboardPage() {
         </h2>
         {publishedRecipes.length > 0 ? (
           <RecipeGrid>
-            {publishedRecipes.map((recipe: any) => (
+            {publishedRecipes.map((recipe) => (
               <RecipeCard
                 key={recipe.id}
                 recipe={{
@@ -163,9 +150,8 @@ export default async function DashboardPage() {
                   difficulty: recipe.difficulty,
                   is_published: true,
                   created_at: recipe.created_at,
-                  author: recipe.profiles?.username || "Anonymous",
                 }}
-                showAuthor={true}
+                showAuthor={false}
               />
             ))}
           </RecipeGrid>
