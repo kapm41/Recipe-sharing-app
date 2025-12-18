@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "../../../lib/supabaseServer";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { FavoriteButton } from "../../../components/recipes/favorite-button";
 import { PublishButton } from "../../../components/recipes/publish-button";
 
@@ -51,6 +52,13 @@ export default async function RecipeDetailPage(props: PageProps) {
     redirect("/dashboard");
   }
 
+  // Get author profile
+  const { data: authorProfile } = await supabase
+    .from("profiles")
+    .select("username, full_name")
+    .eq("id", recipe.author_id)
+    .single();
+
   const { data: tagMaps } = await supabase
     .from("recipe_tag_map")
     .select("tag_id")
@@ -100,8 +108,16 @@ export default async function RecipeDetailPage(props: PageProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            {user && user.id === recipe.author_id && !recipe.is_published && (
-              <PublishButton recipeId={id} />
+            {user && user.id === recipe.author_id && (
+              <>
+                {!recipe.is_published && <PublishButton recipeId={id} />}
+                <Link
+                  href={`/recipes/${id}/edit`}
+                  className="inline-flex items-center rounded-full border border-orange-200 bg-white/80 px-4 py-2 text-xs font-medium text-orange-700 shadow-sm transition hover:border-orange-300 hover:bg-white"
+                >
+                  Edit
+                </Link>
+              </>
             )}
             <FavoriteButton
               recipeId={id}
@@ -124,6 +140,26 @@ export default async function RecipeDetailPage(props: PageProps) {
               Draft
             </span>
           )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-500">
+          <span>
+            By{" "}
+            <span className="font-medium text-zinc-700">
+              {authorProfile?.full_name ||
+                authorProfile?.username ||
+                "Anonymous"}
+            </span>
+          </span>
+          <span>•</span>
+          <span>
+            Created{" "}
+            {new Date(recipe.created_at).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </span>
         </div>
 
         {tags && tags.length > 0 && (
