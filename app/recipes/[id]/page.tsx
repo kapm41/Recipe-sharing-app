@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { FavoriteButton } from "../../../components/recipes/favorite-button";
 import { PublishButton } from "../../../components/recipes/publish-button";
+import { LikeButton } from "../../../components/recipes/like-button";
+import { CommentForm } from "../../../components/recipes/comment-form";
+import { CommentList } from "../../../components/recipes/comment-list";
 
 export const metadata = {
   title: "Recipe | RecipeShare",
@@ -84,6 +87,56 @@ export default async function RecipeDetailPage(props: PageProps) {
           .maybeSingle()
       : { data: null };
 
+  // Get like count and user's like status
+  const { count: likeCount } = await supabase
+    .from("recipe_likes")
+    .select("*", { count: "exact", head: true })
+    .eq("recipe_id", id);
+
+  const { data: userLike } =
+    user
+      ? await supabase
+          .from("recipe_likes")
+          .select("id")
+          .eq("recipe_id", id)
+          .eq("user_id", user.id)
+          .maybeSingle()
+      : { data: null };
+
+  // Get comments
+  const { data: comments } = await supabase
+    .from("recipe_comments")
+    .select("id, content, created_at, updated_at, user_id")
+    .eq("recipe_id", id)
+    .order("created_at", { ascending: true });
+
+  // Get profiles for comment authors
+  const userIds = comments?.map((c) => c.user_id) || [];
+  const { data: profiles } =
+    userIds.length > 0
+      ? await supabase
+          .from("profiles")
+          .select("id, username, full_name")
+          .in("id", userIds)
+      : { data: [] };
+
+  // Transform comments to match CommentList interface
+  const formattedComments =
+    comments?.map((comment) => {
+      const profile = profiles?.find((p) => p.id === comment.user_id);
+      return {
+        id: comment.id,
+        content: comment.content,
+        created_at: comment.created_at,
+        updated_at: comment.updated_at,
+        user_id: comment.user_id,
+        profile: {
+          username: profile?.username || null,
+          full_name: profile?.full_name || null,
+        },
+      };
+    }) || [];
+
   const ingredients = Array.isArray(recipe.ingredients)
     ? (recipe.ingredients as string[])
     : [];
@@ -119,6 +172,12 @@ export default async function RecipeDetailPage(props: PageProps) {
                 </Link>
               </>
             )}
+            <LikeButton
+              recipeId={id}
+              initialLikeCount={likeCount || 0}
+              initialIsLiked={Boolean(userLike)}
+              disabled={!user}
+            />
             <FavoriteButton
               recipeId={id}
               initialIsFavorited={Boolean(favoriteRow)}
@@ -177,7 +236,7 @@ export default async function RecipeDetailPage(props: PageProps) {
 
         {!user && (
           <p className="text-xs text-zinc-500">
-            Log in to save this recipe to your favorites.
+            Log in to like, save, and comment on recipes.
           </p>
         )}
       </header>
@@ -208,6 +267,37 @@ export default async function RecipeDetailPage(props: PageProps) {
             <p className="mt-3 text-sm text-zinc-600">No instructions yet.</p>
           )}
         </div>
+      </section>
+
+      {/* Comments Section */}
+      <section className="space-y-6 rounded-2xl border border-orange-100 bg-white/70 p-6 shadow-sm">
+        <div>
+          <h2 className="text-lg font-semibold text-zinc-900">
+            Comments ({formattedComments.length})
+          </h2>
+        </div>
+
+        {user ? (
+          <CommentForm recipeId={id} />
+        ) : (
+          <div className="rounded-lg border border-orange-100 bg-orange-50/50 p-4 text-center">
+            <p className="text-xs text-zinc-600">
+              <Link
+                href="/login"
+                className="font-medium text-orange-600 hover:text-orange-700"
+              >
+                Log in
+              </Link>{" "}
+              to join the conversation
+            </p>
+          </div>
+        )}
+
+        <CommentList
+          comments={formattedComments}
+          currentUserId={user?.id || null}
+          recipeId={id}
+        />
       </section>
     </div>
   );

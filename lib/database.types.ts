@@ -87,6 +87,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      recipe_comments: {
+        Row: {
+          id: number;
+          recipe_id: string;
+          user_id: string;
+          content: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          recipe_id: string;
+          user_id: string;
+          content: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: number;
+          recipe_id?: string;
+          user_id?: string;
+          content?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      recipe_likes: {
+        Row: {
+          id: number;
+          user_id: string;
+          recipe_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          user_id: string;
+          recipe_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: number;
+          user_id?: string;
+          recipe_id?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       recipes: {
         Row: {
           id: string;
