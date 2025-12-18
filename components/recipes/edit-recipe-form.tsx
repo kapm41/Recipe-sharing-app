@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
+import { DeleteRecipeButton } from "./delete-recipe-button";
 
 type Difficulty = "Easy" | "Medium" | "Hard";
 
@@ -427,22 +428,28 @@ export function EditRecipeForm({
         </label>
       </div>
 
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-lg bg-orange-500 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {loading ? "Saving..." : "Save changes"}
-        </button>
-        <button
-          type="button"
-          onClick={() => router.back()}
-          disabled={loading}
-          className="rounded-lg border border-zinc-300 bg-white px-6 py-2.5 text-sm font-medium text-zinc-700 shadow-sm transition hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          Cancel
-        </button>
+      <div className="space-y-4 border-t border-orange-100 pt-6">
+        <div className="flex gap-3">
+          <button
+            type="submit"
+            disabled={loading}
+            className="rounded-lg bg-orange-500 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {loading ? "Saving..." : "Save changes"}
+          </button>
+          <button
+            type="button"
+            onClick={() => router.back()}
+            disabled={loading}
+            className="rounded-lg border border-zinc-300 bg-white px-6 py-2.5 text-sm font-medium text-zinc-700 shadow-sm transition hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Cancel
+          </button>
+        </div>
+
+        <div className="border-t border-rose-100 pt-4">
+          <DeleteRecipeButton recipeId={recipeId} recipeTitle={title} />
+        </div>
       </div>
     </form>
   );
