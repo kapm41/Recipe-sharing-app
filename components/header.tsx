@@ -57,6 +57,9 @@ export function Header() {
           </Link>
           {user && (
             <>
+              <Link href="/search" className="hover:text-zinc-900">
+                Search
+              </Link>
               <Link href="/my-recipes" className="hover:text-zinc-900">
                 My recipes
               </Link>
