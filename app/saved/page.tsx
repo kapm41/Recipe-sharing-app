@@ -75,7 +75,7 @@ export default async function SavedPage() {
       {recipes && recipes.length > 0 ? (
         <RecipeGrid>
           {recipes.map((recipe: any) => {
-            const author = profileMap.get(recipe.author_id);
+            const author = profileMap.get(recipe.author_id) as any;
             const authorName =
               author?.full_name || author?.username || "Anonymous";
 
