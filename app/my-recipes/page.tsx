@@ -19,20 +19,12 @@ export default async function MyRecipesPage() {
     redirect("/login");
   }
 
-  const { data, error } = await supabase
+  const supabaseAny = supabase as any;
+
+  const { data, error } = await supabaseAny
     .from("recipes")
     .select(
-      `
-      id,
-      title,
-      description,
-      prep_time_minutes,
-      cook_time_minutes,
-      servings,
-      difficulty,
-      created_at,
-      is_published
-    `,
+      "id, title, description, prep_time_minutes, cook_time_minutes, servings, difficulty, created_at, is_published"
     )
     .eq("author_id", user.id)
     .order("created_at", { ascending: false });
