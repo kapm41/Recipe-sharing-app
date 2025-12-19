@@ -16,9 +16,11 @@ export async function getCurrentUser() {
 
 export async function getUserProfile(userId: string) {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
+  const supabaseAny = supabase as any;
+
+  const { data, error } = await supabaseAny
     .from("profiles")
-    .select("*")
+    .select("username, full_name, bio, created_at")
     .eq("id", userId)
     .single();
 
