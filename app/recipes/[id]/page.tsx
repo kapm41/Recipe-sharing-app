@@ -212,7 +212,7 @@ export default async function RecipeDetailPage(props: PageProps) {
 
         {tags && tags.length > 0 && (
           <div className="flex flex-wrap gap-2 pt-1">
-            {tags.map((t) => (
+            {tags.map((t: any) => (
               <span
                 key={t.id}
                 className="rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-orange-700 ring-1 ring-orange-100"
@@ -235,7 +235,7 @@ export default async function RecipeDetailPage(props: PageProps) {
           <h2 className="text-sm font-semibold text-zinc-900">Ingredients</h2>
           {ingredients.length > 0 ? (
             <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-700">
-              {ingredients.map((item, idx) => (
+              {ingredients.map((item: string, idx: number) => (
                 <li key={`${idx}-${item}`}>{item}</li>
               ))}
             </ul>
@@ -248,7 +248,7 @@ export default async function RecipeDetailPage(props: PageProps) {
           <h2 className="text-sm font-semibold text-zinc-900">Instructions</h2>
           {instructions.length > 0 ? (
             <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-zinc-700">
-              {instructions.map((step, idx) => (
+              {instructions.map((step: string, idx: number) => (
                 <li key={`${idx}-${step}`}>{step}</li>
               ))}
             </ol>
