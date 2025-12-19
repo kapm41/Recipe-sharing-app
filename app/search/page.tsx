@@ -26,7 +26,7 @@ async function getAllPublishedRecipes() {
 
   const { data, error } = await supabaseAny
     .from("recipes")
-    .select("*")
+    .select("id, title, description, prep_time_minutes, cook_time_minutes, servings, difficulty, is_published, created_at, author_id")
     .eq("is_published", true)
     .order("created_at", { ascending: false });
 
