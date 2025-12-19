@@ -23,22 +23,12 @@ export default async function EditRecipePage(props: PageProps) {
     redirect("/login");
   }
 
-  const { data: recipe, error } = await supabase
+  const supabaseAny = supabase as any;
+
+  const { data: recipe, error } = await supabaseAny
     .from("recipes")
     .select(
-      `
-      id,
-      author_id,
-      title,
-      description,
-      ingredients,
-      instructions,
-      prep_time_minutes,
-      cook_time_minutes,
-      servings,
-      difficulty,
-      is_published
-    `,
+      "id, author_id, title, description, ingredients, instructions, prep_time_minutes, cook_time_minutes, servings, difficulty, is_published"
     )
     .eq("id", id)
     .single();
@@ -52,12 +42,12 @@ export default async function EditRecipePage(props: PageProps) {
     redirect(`/recipes/${id}`);
   }
 
-  const { data: tagMaps } = await supabase
+  const { data: tagMaps } = await supabaseAny
     .from("recipe_tag_map")
     .select("tag_id")
     .eq("recipe_id", id);
 
-  const tagIds = (tagMaps ?? []).map((m) => m.tag_id);
+  const tagIds = (tagMaps ?? []).map((m: any) => m.tag_id);
 
   const ingredients = Array.isArray(recipe.ingredients)
     ? (recipe.ingredients as string[])

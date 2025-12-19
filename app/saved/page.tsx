@@ -18,7 +18,9 @@ export default async function SavedPage() {
     redirect("/login");
   }
 
-  const { data: favorites, error } = await supabase
+  const supabaseAny = supabase as any;
+
+  const { data: favorites, error } = await supabaseAny
     .from("favorites")
     .select("recipe_id, created_at")
     .eq("user_id", user.id)
@@ -28,13 +30,13 @@ export default async function SavedPage() {
     console.error(error);
   }
 
-  const recipeIds = (favorites ?? []).map((f) => f.recipe_id);
+  const recipeIds = (favorites ?? []).map((f: any) => f.recipe_id);
 
   // Fetch recipes
   const { data: recipes, error: recipesError } =
     recipeIds.length === 0
       ? { data: [], error: null }
-      : await supabase
+      : await supabaseAny
           .from("recipes")
           .select(
             "id, title, description, prep_time_minutes, cook_time_minutes, servings, difficulty, created_at, is_published, author_id"
@@ -47,10 +49,10 @@ export default async function SavedPage() {
   }
 
   // Fetch author profiles
-  const authorIds = recipes?.map((r) => r.author_id) || [];
+  const authorIds = recipes?.map((r: any) => r.author_id) || [];
   const { data: profiles } =
     authorIds.length > 0
-      ? await supabase
+      ? await supabaseAny
           .from("profiles")
           .select("id, username, full_name")
           .in("id", authorIds)
@@ -58,7 +60,7 @@ export default async function SavedPage() {
 
   // Create a map for quick lookup
   const profileMap = new Map(
-    profiles?.map((p) => [p.id, p]) || []
+    profiles?.map((p: any) => [p.id, p]) || []
   );
 
   return (
@@ -72,7 +74,7 @@ export default async function SavedPage() {
 
       {recipes && recipes.length > 0 ? (
         <RecipeGrid>
-          {recipes.map((recipe) => {
+          {recipes.map((recipe: any) => {
             const author = profileMap.get(recipe.author_id);
             const authorName =
               author?.full_name || author?.username || "Anonymous";

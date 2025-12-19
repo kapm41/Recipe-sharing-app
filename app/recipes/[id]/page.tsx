@@ -25,23 +25,12 @@ export default async function RecipeDetailPage(props: PageProps) {
   } = await supabase.auth.getUser();
 
   // Allow viewing published recipes without auth, but favorites require auth.
-  const { data: recipe, error } = await supabase
+  const supabaseAny = supabase as any;
+
+  const { data: recipe, error } = await supabaseAny
     .from("recipes")
     .select(
-      `
-      id,
-      author_id,
-      title,
-      description,
-      ingredients,
-      instructions,
-      prep_time_minutes,
-      cook_time_minutes,
-      servings,
-      difficulty,
-      is_published,
-      created_at
-    `,
+      "id, author_id, title, description, ingredients, instructions, prep_time_minutes, cook_time_minutes, servings, difficulty, is_published, created_at"
     )
     .eq("id", id)
     .single();
@@ -56,22 +45,22 @@ export default async function RecipeDetailPage(props: PageProps) {
   }
 
   // Get author profile
-  const { data: authorProfile } = await supabase
+  const { data: authorProfile } = await supabaseAny
     .from("profiles")
     .select("username, full_name")
     .eq("id", recipe.author_id)
     .single();
 
-  const { data: tagMaps } = await supabase
+  const { data: tagMaps } = await supabaseAny
     .from("recipe_tag_map")
     .select("tag_id")
     .eq("recipe_id", id);
 
-  const tagIds = (tagMaps ?? []).map((m) => m.tag_id);
+  const tagIds = (tagMaps ?? []).map((m: any) => m.tag_id);
   const { data: tags } =
     tagIds.length === 0
       ? { data: [] }
-      : await supabase
+      : await supabaseAny
           .from("recipe_tags")
           .select("id, name")
           .in("id", tagIds)
@@ -79,7 +68,7 @@ export default async function RecipeDetailPage(props: PageProps) {
 
   const { data: favoriteRow } =
     user
-      ? await supabase
+      ? await supabaseAny
           .from("favorites")
           .select("id")
           .eq("user_id", user.id)
@@ -88,14 +77,14 @@ export default async function RecipeDetailPage(props: PageProps) {
       : { data: null };
 
   // Get like count and user's like status
-  const { count: likeCount } = await supabase
+  const { count: likeCount } = await supabaseAny
     .from("recipe_likes")
     .select("*", { count: "exact", head: true })
     .eq("recipe_id", id);
 
   const { data: userLike } =
     user
-      ? await supabase
+      ? await supabaseAny
           .from("recipe_likes")
           .select("id")
           .eq("recipe_id", id)
@@ -122,8 +111,8 @@ export default async function RecipeDetailPage(props: PageProps) {
 
   // Transform comments to match CommentList interface
   const formattedComments =
-    comments?.map((comment) => {
-      const profile = profiles?.find((p) => p.id === comment.user_id);
+    comments?.map((comment: any) => {
+      const profile = profiles?.find((p: any) => p.id === comment.user_id);
       return {
         id: comment.id,
         content: comment.content,
