@@ -93,17 +93,17 @@ export default async function RecipeDetailPage(props: PageProps) {
       : { data: null };
 
   // Get comments
-  const { data: comments } = await supabase
+  const { data: comments } = await supabaseAny
     .from("recipe_comments")
     .select("id, content, created_at, updated_at, user_id")
     .eq("recipe_id", id)
     .order("created_at", { ascending: true });
 
   // Get profiles for comment authors
-  const userIds = comments?.map((c) => c.user_id) || [];
+  const userIds = comments?.map((c: any) => c.user_id) || [];
   const { data: profiles } =
     userIds.length > 0
-      ? await supabase
+      ? await supabaseAny
           .from("profiles")
           .select("id, username, full_name")
           .in("id", userIds)
